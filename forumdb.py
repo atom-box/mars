@@ -7,9 +7,14 @@ BASE1 = 'forum'
 db = psycopg2.connect(dbname = BASE1)
 c = db.cursor()
 print "Hey", datetime.datetime.now() , " !!!"
-query = "insert into posts values('Lou ', null,88  );" # works
-c.execute(query) # works
+
+# uncommen t to clear:
+"""
+content = "');  delete from posts; --"
+c.execute("insert into posts values('%s')" % content)
 db.commit()
+"""
+
 db.close()
 
 
@@ -20,7 +25,7 @@ def get_posts():
 	db = psycopg2.connect(dbname = BASE1)
 	c = db.cursor()
 	print("Top of get_posts executed.")
-	c.execute( 'select content, time from posts ;' )
+	c.execute( 'select content, time from posts order by time desc;' )
 	multiComments = c.fetchall()
 	db.close()
 	return multiComments
@@ -29,7 +34,7 @@ def get_posts():
 def add_post(content):
 	db = psycopg2.connect(dbname = BASE1)
 	c = db.cursor()
-	c.execute('insert into posts values(null, null);')
+	c.execute("insert into posts values(%s)", (content,) )
 	db.commit()
 	db.close()
 	print "Exited add post succesfully. "
