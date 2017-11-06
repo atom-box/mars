@@ -28,4 +28,4 @@ def add_post(content):
 	c.execute('insert into posts values(null, null);')
 	db.commit()
 	db.close()
-	print "Exited add post succesfully."
+	print "Exited add post succesfully. "
