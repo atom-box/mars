@@ -9,6 +9,7 @@ c = db.cursor()
 print "Hey", datetime.datetime.now() , " !!!"
 query = "insert into posts values('Lou ', null,88  );" # works
 c.execute(query) # works
+db.commit()
 db.close()
 
 
@@ -24,6 +25,7 @@ def add_post(content):
 	db = psycopg2.connect(dbname = BASE1)
 	c = db.cursor()
 	print("Top of add_post executed.")
-	c.execute('insert into posts values(null, null;')
+	c.execute('insert into posts values(null, null);')
 	db.commit()
 	db.close()
+	print "Exited add post succesfully."
