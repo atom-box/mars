@@ -17,14 +17,18 @@ db.close()
 
 def get_posts():
 	# todo always give the same select.  fetchall or something
+	db = psycopg2.connect(dbname = BASE1)
+	c = db.cursor()
 	print("Top of get_posts executed.")
-	return [("Harry Potter", datetime.datetime.now() )]
+	c.execute( 'select content, time from posts ;' )
+	multiComments = c.fetchall()
+	db.close()
+	return multiComments
 
 #"""Add a post to the 'database' with the current timestamp."""
 def add_post(content):
 	db = psycopg2.connect(dbname = BASE1)
 	c = db.cursor()
-	print("Top of add_post executed.")
 	c.execute('insert into posts values(null, null);')
 	db.commit()
 	db.close()
