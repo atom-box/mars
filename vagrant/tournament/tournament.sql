@@ -7,7 +7,6 @@
 -- Udacity: "Intro to Relational Databases"
 
 
-create database ashe;
 
 CREATE TABLE games (
 	playerID integer,
@@ -21,4 +20,13 @@ CREATE TABLE players (
 	playerID serial	
 );
 
+INSERT INTO players values(
+	'Nadal', 0
+);
 
+INSERT INTO players values(
+	'Zidane', 0
+);
+INSERT INTO players values(
+	'Montfils', 0
+);
