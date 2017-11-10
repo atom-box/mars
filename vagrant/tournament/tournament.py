@@ -37,11 +37,19 @@ def deletePlayers():
     c = db.cursor()
     QUERY = 'delete from players;'
     c.execute( QUERY )
-    c.close()
+    db.close()
     """Remove all the player records from the database."""
 
 
 def countPlayers():
+    handleBarMoustache = connect()
+    swearer = handleBarMoustache.cursor()
+    QUERY = 'select count(*) from players;'
+    swearer.execute( QUERY )
+    x = swearer.fetchall()
+    handleBarMoustache.close()
+    return  int(x[0][0])  
+
     """Returns the number of players currently registered."""
 
 
@@ -99,5 +107,6 @@ def swissPairings():
 print( "Let's start! ")
 deleteMatches()
 deletePlayers()
+print( 'The tourney has ' , countPlayers() , ' players!') 
 print( "That was fun.")
 
