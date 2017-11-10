@@ -6,18 +6,38 @@
 import psycopg2
 
 
+"""
+import the PostgreSQL
+make a handle, via Connect
+make a cursor from the handle
+write a QUERY
+EXECUTE it
+fetch the results into some python varables
+close the handle
+"""
 
 
 def connect():
     """Connect to the PostgreSQL database.  Returns a database connection."""
+    # I plan to use this within the other routines
     return psycopg2.connect("dbname=tournament")
 
 
 def deleteMatches():
+    db = connect()
+    c = db.cursor()
+    QUERY = 'delete from games;'
+    c.execute( QUERY )
+    c.close()
     """Remove all the match records from the database."""
 
 
 def deletePlayers():
+    db = connect()
+    c = db.cursor()
+    QUERY = 'delete from players;'
+    c.execute( QUERY )
+    c.close()
     """Remove all the player records from the database."""
 
 
@@ -76,4 +96,8 @@ def swissPairings():
         name2: the second player's name
     """
 
+print( "Let's start! ")
+deleteMatches()
+deletePlayers()
+print( "That was fun.")
 
