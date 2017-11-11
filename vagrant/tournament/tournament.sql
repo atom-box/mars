@@ -18,28 +18,13 @@ CREATE DATABASE tournament;
 
 CREATE TABLE games (
 	playerID integer,
-	round integer,
-	game serial
+	game  serial PRIMARY KEY,
+	success boolean
 );
 
 CREATE TABLE players (
 	name text,
-	cumulativePts integer,
 	playerID serial	
 );
 
-INSERT INTO players values(
-	'Nadal', 0
-);
 
-INSERT INTO players values(
-	'Zidane', 0
-);
-INSERT INTO players values(
-	'Genest-Balfour', 11
-);
-
-
-INSERT INTO players values(
-	'Montfils', 0
-);
