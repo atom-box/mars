@@ -5,18 +5,6 @@
 
 import psycopg2
 
-
-"""
-import the PostgreSQL
-make a handle, via Connect
-make a cursor from the handle
-write a QUERY
-EXECUTE it
-fetch the results into some python varables
-close the handle
-"""
-
-
 def connect():
     """Connect to the PostgreSQL database.  Returns a database connection."""
     # I plan to use this within the other routines
@@ -28,15 +16,18 @@ def deleteMatches():
     c = db.cursor()
     QUERY = 'delete from games;'
     c.execute( QUERY )
-    c.close()
+    db.commit()
+    db.close()
     """Remove all the match records from the database."""
 
 
 def deletePlayers():
     db = connect()
+    print("Here we are, trying to delete players.")
     c = db.cursor()
     QUERY = 'delete from players;'
     c.execute( QUERY )
+    db.commit()
     db.close()
     """Remove all the player records from the database."""
 
@@ -54,7 +45,17 @@ def countPlayers():
 
 
 def registerPlayer(name):
-    """Adds a player to the tournament database.
+    # TO DO TO DO
+    # SERIAL NUMBER needs resettability: 
+    # 1, 2, 3, 19, 20 , 21.   Huh!?
+   HAN_SOLO = connect() 
+   c = HAN_SOLO.cursor()
+   QUERY = "insert into players (name) values ('"+ name +"' );"
+   c.execute( QUERY )
+   HAN_SOLO.commit()
+   HAN_SOLO.close()
+
+   """Adds a player to the tournament database.
   
     The database assigns a unique serial id number for the player.  (This
     should be handled by your SQL database schema, not in your Python code.)
@@ -65,6 +66,14 @@ def registerPlayer(name):
 
 
 def playerStandings():
+    h = connect()
+    c = h.cursor()
+    QUERY = """
+        SELECT name, wins FROM players ORDER BY wins DESC;
+    """
+    c.execute( QUERY )
+    theStuff = c.fetchall()
+    return theStuff
     """Returns a list of the players and their win records, sorted by wins.
 
     The first entry in the list should be the player in first place, or a player
@@ -80,12 +89,14 @@ def playerStandings():
 
 
 def reportMatch(winner, loser):
-    """Records the outcome of a single match between two players.
+    h = connect()
+    c = h.cursor()
 
-    Args:
-      winner:  the id number of the player who won
-      loser:  the id number of the player who lost
-    """
+    c.execute("""
+        INSERT INTO games (playerID, success)
+        VALUES (%s, %s);
+        """,
+        (10, 'n'))
  
  
 def swissPairings():
@@ -107,6 +118,19 @@ def swissPairings():
 print( "Let's start! ")
 deleteMatches()
 deletePlayers()
-print( 'The tourney has ' , countPlayers() , ' players!') 
-print( "That was fun.")
+print( 'After deleting there are ' , countPlayers() , ' players!') 
+registerPlayer("Sealtest Milk")
+registerPlayer("Sparty")
+registerPlayer("Buckminster Fuller")
+registerPlayer("Vishnubotla")
+registerPlayer("Larry Ross III")
+registerPlayer("Pinto")
+print( 'After registering there are ' , countPlayers() , ' players!') 
+reportMatch(3,2)
+reportMatch(1,4)
+reportMatch(6,5)
+reportMatch(3,4)
+reportMatch(1,2)
+reportMatch(6,5)
 
+print( "That was fun.")
