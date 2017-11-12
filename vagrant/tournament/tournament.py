@@ -69,8 +69,8 @@ def playerStandings():
     h = connect()
     c = h.cursor()
     QUERY = """
-        SELECT name, wins FROM players ORDER BY wins DESC;
-    """
+        select playerid, count(*) as wins from games where success= 'true'  group by playerid order by wins desc;
+     """
     c.execute( QUERY )
     theStuff = c.fetchall()
     return theStuff
@@ -96,7 +96,15 @@ def reportMatch(winner, loser):
         INSERT INTO games (playerID, success)
         VALUES (%s, %s);
         """,
-        (10, 'n'))
+        (loser , 'n'))
+    c.execute("""
+        INSERT INTO games (playerID, success)
+        VALUES (%s, %s);
+        """,
+        (winner, 'y'))
+    h.commit()
+    h.close()
+    return
  
  
 def swissPairings():
@@ -127,10 +135,11 @@ registerPlayer("Larry Ross III")
 registerPlayer("Pinto")
 print( 'After registering there are ' , countPlayers() , ' players!') 
 reportMatch(3,2)
-reportMatch(1,4)
+reportMatch(3,4)
 reportMatch(6,5)
 reportMatch(3,4)
 reportMatch(1,2)
 reportMatch(6,5)
-
+print( "Player standings has: ") 
+print( playerStandings() )
 print( "That was fun.")
