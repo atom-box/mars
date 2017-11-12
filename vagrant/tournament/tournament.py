@@ -3,6 +3,11 @@
 # tournament.py -- implementation of a Swiss-system tournament
 #
 
+"""To Do:
+todo: do a self join with left side mandatory (Left join?)
+ASSUME: client will run the SQL before the Python.  You must too. 
+ """
+
 import psycopg2
 
 def connect():
@@ -108,6 +113,7 @@ def reportMatch(winner, loser):
  
  
 def swissPairings():
+
     """Returns a list of pairs of players for the next round of a match.
   
     Assuming that there are an even number of players registered, each player
@@ -124,6 +130,8 @@ def swissPairings():
     """
 
 print( "Let's start! ")
+print("ASSUME: client will run the SQL before the Python.  You must too. ")
+
 deleteMatches()
 deletePlayers()
 print( 'After deleting there are ' , countPlayers() , ' players!') 
@@ -140,6 +148,11 @@ reportMatch(6,5)
 reportMatch(3,4)
 reportMatch(1,2)
 reportMatch(6,5)
+reportMatch(3,2)
+reportMatch(3,4)
+reportMatch(1,5)
+reportMatch(3,4)
+
 print( "Player standings has: ") 
 print( playerStandings() )
 print( "That was fun.")
