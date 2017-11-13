@@ -75,14 +75,10 @@ def playerStandings():
     h = connect()
     c = h.cursor()
     QUERY = """
-        CREATE VIEW apple AS 
-            SELECT count(success) AS wins FROM games GROUP BY playerid;
-     """
-    QUERY2 = """
-        SELECT wins FROM apple;
+        SELECT name, wins FROM players ORDER BY wins desc;
     """
     c.execute(QUERY)
-    c.execute(QUERY2)
+ 
     theStuff = c.fetchall()
     return theStuff
     """Returns a list of the players and their win records, sorted by wins.
@@ -102,12 +98,10 @@ def playerStandings():
 def reportMatch(winner, loser):
     h = connect()
     c = h.cursor()
-
     c.execute( "update players SET wins = wins + 1 where playerid=" +str(winner)+ ";")
     c.execute( "update players SET starts = starts + 1 where playerid=" +str(winner)+ ";")
     c.execute( "update players SET starts = starts + 1 where playerid=" +str(loser)+ ";")
-
-
+    print('Hey' + str(winner) )
     h.commit()
     h.close()
     return
@@ -148,9 +142,9 @@ reportMatch(3,4)
 reportMatch(6,5)
 reportMatch(3,4)
 reportMatch(6,2)
-reportMatch(6,5)
+reportMatch(6,1)
 reportMatch(3,2)
-reportMatch(3,4)
+reportMatch(3,1)
 reportMatch(3,5)
 reportMatch(3,4)
 
