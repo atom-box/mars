@@ -6,6 +6,7 @@
 """To Do:
 todo: do a self join with left side mandatory (Left join?)
 ASSUME: client will run the SQL before the Python.  You must too. 
+todo:  game# serial makes no sense.   should be 1, 1, 2, 2, not serial GOOD FIX, MAKE GAMES TABLE 3 COLUMNS: SERIAL, WINNERID, LOSERID
  """
 
 import psycopg2
@@ -55,7 +56,7 @@ def registerPlayer(name):
     # 1, 2, 3, 19, 20 , 21.   Huh!?
    HAN_SOLO = connect() 
    c = HAN_SOLO.cursor()
-   QUERY = "insert into players (name) values ('"+ name +"' );"
+   QUERY = "insert into players (name, starts, wins) values ('"+ name +"' , 0, 0 );"
    c.execute( QUERY )
    HAN_SOLO.commit()
    HAN_SOLO.close()
@@ -74,9 +75,14 @@ def playerStandings():
     h = connect()
     c = h.cursor()
     QUERY = """
-        select playerid, count(*) as wins from games where success= 'true'  group by playerid order by wins desc;
+        CREATE VIEW apple AS 
+            SELECT count(success) AS wins FROM games GROUP BY playerid;
      """
-    c.execute( QUERY )
+    QUERY2 = """
+        SELECT wins FROM apple;
+    """
+    c.execute(QUERY)
+    c.execute(QUERY2)
     theStuff = c.fetchall()
     return theStuff
     """Returns a list of the players and their win records, sorted by wins.
@@ -97,16 +103,11 @@ def reportMatch(winner, loser):
     h = connect()
     c = h.cursor()
 
-    c.execute("""
-        INSERT INTO games (playerID, success)
-        VALUES (%s, %s);
-        """,
-        (loser , 'n'))
-    c.execute("""
-        INSERT INTO games (playerID, success)
-        VALUES (%s, %s);
-        """,
-        (winner, 'y'))
+    c.execute( "update players SET wins = wins + 1 where playerid=" +str(winner)+ ";")
+    c.execute( "update players SET starts = starts + 1 where playerid=" +str(winner)+ ";")
+    c.execute( "update players SET starts = starts + 1 where playerid=" +str(loser)+ ";")
+
+
     h.commit()
     h.close()
     return
@@ -146,11 +147,11 @@ reportMatch(3,2)
 reportMatch(3,4)
 reportMatch(6,5)
 reportMatch(3,4)
-reportMatch(1,2)
+reportMatch(6,2)
 reportMatch(6,5)
 reportMatch(3,2)
 reportMatch(3,4)
-reportMatch(1,5)
+reportMatch(3,5)
 reportMatch(3,4)
 
 print( "Player standings has: ") 

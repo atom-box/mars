@@ -24,7 +24,17 @@ CREATE TABLE games (
 
 CREATE TABLE players (
 	name text,
-	playerID serial	
+	playerID serial,	
+	starts integer,
+	wins integer
 );
+
+-- DIDN'T HAVE THIS AT FIRST.  A THIRD TABLE TO TRY not null TO FORCE ZERO
+CREATE TABLE tally (
+	playerID integer NOT NULL, 
+	wins integer NOT NULL
+);
+
+
 
 
