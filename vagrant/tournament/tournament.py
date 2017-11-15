@@ -75,7 +75,7 @@ def playerStandings():
     h = connect()
     c = h.cursor()
     QUERY = """
-        SELECT name, wins FROM players ORDER BY wins desc;
+        SELECT playerid, name, wins, starts as matches FROM players ORDER BY wins desc;
     """
     c.execute(QUERY)
  
@@ -109,6 +109,18 @@ def reportMatch(winner, loser):
  
 def swissPairings():
 
+    h = connect()
+    c = h.cursor
+    QUERY =  '''
+        SELECT playerid, name FROM players ORDER BY wins desc;
+    '''
+    c.execute( QUERY )
+    rawAll = c.fetchall()
+    flag = 0
+    for n in rawAll:
+        if (flag%2):
+                    ..........................
+
     """Returns a list of pairs of players for the next round of a match.
   
     Assuming that there are an even number of players registered, each player
@@ -126,17 +138,6 @@ def swissPairings():
 
 print( "Let's start! ")
 print("ASSUME: client will run the SQL before the Python.  You must too. ")
-
-deleteMatches()
-deletePlayers()
-print( 'After deleting there are ' , countPlayers() , ' players!') 
-registerPlayer("Sealtest Milk")
-registerPlayer("Sparty")
-registerPlayer("Buckminster Fuller")
-registerPlayer("Vishnubotla")
-registerPlayer("Larry Ross III")
-registerPlayer("Pinto")
-print( 'After registering there are ' , countPlayers() , ' players!') 
 reportMatch(3,2)
 reportMatch(3,4)
 reportMatch(6,5)
