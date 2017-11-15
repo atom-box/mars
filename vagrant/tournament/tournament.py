@@ -29,7 +29,6 @@ def deleteMatches():
 
 def deletePlayers():
     db = connect()
-    print("Here we are, trying to delete players.")
     c = db.cursor()
     QUERY = 'delete from players;'
     c.execute( QUERY )
@@ -101,26 +100,40 @@ def reportMatch(winner, loser):
     c.execute( "update players SET wins = wins + 1 where playerid=" +str(winner)+ ";")
     c.execute( "update players SET starts = starts + 1 where playerid=" +str(winner)+ ";")
     c.execute( "update players SET starts = starts + 1 where playerid=" +str(loser)+ ";")
-    print('Hey' + str(winner) )
     h.commit()
     h.close()
     return
  
  
 def swissPairings():
-
     h = connect()
-    c = h.cursor
-    QUERY =  '''
-        SELECT playerid, name FROM players ORDER BY wins desc;
+    c = h.cursor()
+    QUERY0 = '''
+    DROP VIEW IF EXISTS players2, players3;
     '''
-    c.execute( QUERY )
-    rawAll = c.fetchall()
-    flag = 0
-    for n in rawAll:
-        if (flag%2):
-                    ..........................
+    QUERY1 =  '''
+        CREATE VIEW players2 AS select playerid, name, wins from players order by wins desc;
+    '''    
+    c.execute(QUERY1)
 
+
+
+    QUERY2 =  '''
+        CREATE VIEW players3 AS select playerid, name, wins, row_number() OVER (ORDER BY wins DESC) as hay from players  ;
+    '''
+    QUERY3 =  '''
+        select a.playerid, a.name, b.playerid, b.name
+        FROM players3 as a, players3 as b 
+        WHERE a.hay+1 = b.hay AND (a.hay%2=1);
+
+
+    '''
+    c.execute( QUERY0 )    
+    c.execute( QUERY1 )
+    c.execute( QUERY2 )
+    c.execute( QUERY3 )
+    rawAll = c.fetchall()
+    return rawAll
     """Returns a list of pairs of players for the next round of a match.
   
     Assuming that there are an even number of players registered, each player
@@ -151,4 +164,6 @@ reportMatch(3,4)
 
 print( "Player standings has: ") 
 print( playerStandings() )
+print( "Swiss pairings has: ") 
+print( swissPairings() )
 print( "That was fun.")
