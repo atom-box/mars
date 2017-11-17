@@ -55,8 +55,9 @@ def registerPlayer(name):
     # 1, 2, 3, 19, 20 , 21.   Huh!?
    HAN_SOLO = connect() 
    c = HAN_SOLO.cursor()
-   QUERY = "insert into players (name, starts, wins) values ('"+ name +"' , 0, 0 );"
-   c.execute( QUERY )
+   QUERY = "insert into players (name, starts, wins) values (%s , 0, 0 );"
+   DATA = (name, )
+   c.execute( QUERY, DATA )
    HAN_SOLO.commit()
    HAN_SOLO.close()
 
@@ -151,6 +152,14 @@ def swissPairings():
 
 print( "Let's start! ")
 print("ASSUME: client will run the SQL before the Python.  You must too. ")
+registerPlayer("Bela Abzug")
+registerPlayer("Wayne County")
+registerPlayer("Warren")
+registerPlayer("Shamu")
+registerPlayer("123Alien")
+registerPlayer("Mork & Mindy")
+
+
 reportMatch(3,2)
 reportMatch(3,4)
 reportMatch(6,5)
