@@ -20,7 +20,7 @@ def connect():
 def deleteMatches():
     db = connect()
     c = db.cursor()
-    QUERY = 'delete from games;'
+    QUERY = 'UPDATE players SET starts=0 , wins=0;'
     c.execute( QUERY )
     db.commit()
     db.close()
@@ -113,21 +113,25 @@ def swissPairings():
     DROP VIEW IF EXISTS players2, players3;
     '''
     QUERY1 =  '''
-        CREATE VIEW players2 AS select playerid, name, wins from players order by wins desc;
+        CREATE VIEW players2 AS 
+        SELECT playerid, name, wins 
+        FROM players ORDER BY wins DESC;
     '''    
     c.execute(QUERY1)
 
 
 
     QUERY2 =  '''
-        CREATE VIEW players3 AS select playerid, name, wins, row_number() OVER (ORDER BY wins DESC) as hay from players  ;
+        CREATE VIEW players3 AS 
+        SELECT playerid, name, wins, 
+        row_number() OVER (ORDER BY wins DESC) 
+        AS hay 
+        FROM players  ;
     '''
     QUERY3 =  '''
-        select a.playerid, a.name, b.playerid, b.name
-        FROM players3 as a, players3 as b 
+        SELECT a.playerid, a.name, b.playerid, b.name
+        FROM players3 as a, players3 AS b 
         WHERE a.hay+1 = b.hay AND (a.hay%2=1);
-
-
     '''
     c.execute( QUERY0 )    
     c.execute( QUERY1 )
@@ -151,7 +155,7 @@ def swissPairings():
     """
 
 print( "Let's start! ")
-print("ASSUME: client will run the SQL before the Python.  You must too. ")
+print("ASSUME: client will run the SQL before the Python.  Syntax: \i tournament.sql from the psql prompt, with db CLOSED. ")
 registerPlayer("Bela Abzug")
 registerPlayer("Wayne County")
 registerPlayer("Warren")
