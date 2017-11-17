@@ -16,11 +16,6 @@ CREATE DATABASE tournament;
 \c tournament;
 -- kind of worried about needing or not needing a \c line here
 
-CREATE TABLE games (
-	playerID integer,
-	game  serial PRIMARY KEY,
-	success boolean
-);
 
 CREATE TABLE players (
 	name text,
@@ -29,11 +24,7 @@ CREATE TABLE players (
 	wins integer
 );
 
--- DIDN'T HAVE THIS AT FIRST.  A THIRD TABLE TO TRY not null TO FORCE ZERO
-CREATE TABLE tally (
-	playerID integer NOT NULL, 
-	wins integer NOT NULL
-);
+
 
 
 
