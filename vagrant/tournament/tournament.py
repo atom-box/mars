@@ -4,9 +4,9 @@
 #
 
 """To Do:
-todo: do a self join with left side mandatory (Left join?)
-ASSUME: client will run the SQL before the Python.  You must too. 
-todo:  game# serial makes no sense.   should be 1, 1, 2, 2, not serial GOOD FIX, MAKE GAMES TABLE 3 COLUMNS: SERIAL, WINNERID, LOSERID
+ToDo Per Udacity-reviewer-comments (11-18-2017) rewrite to have more normalized database.  Have two tables: players(id, name) and matches(match_id, winner_id, loser_id).  Add primary key to both.    
+ToDo Per Udacity-reviewer-comments (11-18-2017) rewrite first four functions.   New tables are players(id, name) and matches(match_id, winner_id, loser_id).  Rewrite erase, addResult, and standings functions. 
+
  """
 
 import psycopg2
@@ -20,7 +20,7 @@ def connect():
 def deleteMatches():
     db = connect()
     c = db.cursor()
-    QUERY = 'UPDATE players SET starts=0 , wins=0;'
+    QUERY = 'DELETE FROM matches;'
     c.execute( QUERY )
     db.commit()
     db.close()
@@ -30,7 +30,7 @@ def deleteMatches():
 def deletePlayers():
     db = connect()
     c = db.cursor()
-    QUERY = 'delete from players;'
+    QUERY = 'DELETE FROM players;'
     c.execute( QUERY )
     db.commit()
     db.close()
@@ -40,7 +40,7 @@ def deletePlayers():
 def countPlayers():
     handleBarMoustache = connect()
     swearer = handleBarMoustache.cursor()
-    QUERY = 'select count(*) from players;'
+    QUERY = 'SELECT COUNT(*) FROM players;'
     swearer.execute( QUERY )
     x = swearer.fetchall()
     handleBarMoustache.close()
@@ -55,7 +55,7 @@ def registerPlayer(name):
     # 1, 2, 3, 19, 20 , 21.   Huh!?
    HAN_SOLO = connect() 
    c = HAN_SOLO.cursor()
-   QUERY = "insert into players (name, starts, wins) values (%s , 0, 0 );"
+   QUERY = "insert into players (name) values (%s);"
    DATA = (name, )
    c.execute( QUERY, DATA )
    HAN_SOLO.commit()
@@ -75,7 +75,7 @@ def playerStandings():
     h = connect()
     c = h.cursor()
     QUERY = """
-        SELECT playerid, name, wins, starts as matches FROM players ORDER BY wins desc;
+        SELECT player_id, name, wins, starts as matches FROM players ORDER BY wins desc;
     """
     c.execute(QUERY)
  
@@ -90,7 +90,7 @@ def playerStandings():
       A list of tuples, each of which contains (id, name, wins, matches):
         id: the player's unique id (assigned by the database)
         name: the player's full name (as registered)
-        wins: the number of matches the player has won
+        wins: the number of  matches the player has won
         matches: the number of matches the player has played
     """
 
@@ -98,9 +98,11 @@ def playerStandings():
 def reportMatch(winner, loser):
     h = connect()
     c = h.cursor()
-    c.execute( "update players SET wins = wins + 1 where playerid=" +str(winner)+ ";")
-    c.execute( "update players SET starts = starts + 1 where playerid=" +str(winner)+ ";")
-    c.execute( "update players SET starts = starts + 1 where playerid=" +str(loser)+ ";")
+    QUERY1 = "INSERT INTO matches (winner_id, loser_id) VALUES (%s, %s);"
+    DATA_WINNER = (winner,)
+    DATA_LOSER = (loser,)
+    c.execute(QUERY1, (DATA_WINNER, DATA_LOSER) )
+
     h.commit()
     h.close()
     return
