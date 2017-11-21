@@ -74,12 +74,66 @@ def registerPlayer(name):
 def playerStandings():
     h = connect()
     c = h.cursor()
-    QUERY = """
-        SELECT player_id, name, wins, starts as matches FROM players ORDER BY wins desc;
+    QUERY_W = """
+    CREATE VIEW w AS                                                                                 
+    SELECT matches.winner_id, count(*) as wins
+    FROM matches GROUP BY winner_id;
     """
-    c.execute(QUERY)
- 
-    theStuff = c.fetchall()
+    QUERY_L = """
+        CREATE VIEW l AS                                                                            
+        SELECT matches.loser_id, count(*) as losses
+        FROM matches GROUP BY loser_id;
+    """
+    QUERY_PW = """
+        CREATE VIEW pw AS 
+        SELECT players.name, players.player_id, W.wins 
+        FROM players LEFT JOIN W 
+        ON players.player_id = W.winner_id;
+    """
+    QUERY_PWL = """
+        CREATE VIEW pwl AS 
+        SELECT PW.name, PW.player_id, PW.wins, L.losses 
+        FROM PW LEFT JOIN L 
+        ON PW.player_id = L.loser_id;   
+    """
+    QUERY_PWL2 = """
+        CREATE VIEW pwl2 AS 
+        SELECT name, player_id, 
+        CASE 
+            WHEN wins ISNULL
+                THEN 0
+            ELSE
+                wins END,
+        CASE 
+            WHEN losses ISNULL
+                THEN 0
+            ELSE
+                losses END
+        FROM PWL;  
+    """
+    QUERY_S = """
+        CREATE VIEW s AS 
+        SELECT player_id, wins + losses AS STARTS 
+        FROM pwl2; 
+    """
+    QUERY_INWM = """
+        SELECT pwl2.player_id,
+        pwl2.name, pwl2.wins,
+        s.starts 
+        FROM pwl2 JOIN s 
+        ON pwl2.player_id =s.player_id;
+    """
+
+    c.execute(QUERY_W)
+    c.execute(QUERY_L)
+    c.execute(QUERY_PW)
+    c.execute(QUERY_PWL)
+    c.execute(QUERY_PWL2)
+    c.execute(QUERY_S)
+    c.execute(QUERY_INWM)
+    theStuff = c.fetchall() #c.fetchall()
+    h.rollback()
+    h.close()
     return theStuff
     """Returns a list of the players and their win records, sorted by wins.
 
@@ -175,5 +229,5 @@ reportMatch(2,4)
 print( "Player standings has: ") 
 print( playerStandings() )
 print( "Swiss pairings has: ") 
-print( swissPairings() )
+# print( swissPairings() )
 print( "That was fun.")
