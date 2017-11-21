@@ -88,7 +88,7 @@ def playerStandings():
 
     Returns:
       A list of tuples, each of which contains (id, name, wins, matches):
-        id: the player's unique id (assigned by the database)
+        id: the plyer's unique id (assigned by the database)
         name: the player's full name (as registered)
         wins: the number of  matches the player has won
         matches: the number of matches the player has played
@@ -166,16 +166,11 @@ registerPlayer("123Alien")
 registerPlayer("Mork & Mindy")
 
 
-reportMatch(3,2)
+reportMatch(1,2)
 reportMatch(3,4)
-reportMatch(6,5)
-reportMatch(3,4)
-reportMatch(6,2)
-reportMatch(6,1)
-reportMatch(3,2)
-reportMatch(3,1)
-reportMatch(3,5)
-reportMatch(3,4)
+reportMatch(1,3)
+reportMatch(2,4)
+
 
 print( "Player standings has: ") 
 print( playerStandings() )
