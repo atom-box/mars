@@ -19,11 +19,14 @@ CREATE DATABASE tournament;
 
 CREATE TABLE players (
 	name text,
-	playerID serial,	
-	starts integer,
-	wins integer
+	player_id serial PRIMARY KEY	
 );
 
+CREATE TABLE matches (
+	match_id serial PRIMARY KEY,
+	winner_id integer,
+	loser_id integer
+);
 
 
 
