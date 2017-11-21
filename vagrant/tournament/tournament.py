@@ -76,12 +76,12 @@ def playerStandings():
     c = h.cursor()
     QUERY_W = """
     CREATE VIEW w AS                                                                                 
-    SELECT matches.winner_id, count(*) as wins
+    SELECT matches.winner_id, count(*)::smallint as wins
     FROM matches GROUP BY winner_id;
     """
     QUERY_L = """
         CREATE VIEW l AS                                                                            
-        SELECT matches.loser_id, count(*) as losses
+        SELECT matches.loser_id, count(*)::smallint as losses
         FROM matches GROUP BY loser_id;
     """
     QUERY_PW = """
@@ -175,8 +175,6 @@ def swissPairings():
     '''    
     c.execute(QUERY1)
 
-
-
     QUERY2 =  '''
         CREATE VIEW players3 AS 
         SELECT playerid, name, wins, 
@@ -228,6 +226,12 @@ reportMatch(2,4)
 
 print( "Player standings has: ") 
 print( playerStandings() )
+print( "The first mystery L is: ") 
+listOfTuples = playerStandings()
+print( listOfTuples[0][0], listOfTuples[0][2], listOfTuples[0][3])
+print("Fixed?")
+print( listOfTuples[0][0], int(listOfTuples[0][2]), str(listOfTuples[0][3]) ) 
+
 print( "Swiss pairings has: ") 
 # print( swissPairings() )
 print( "That was fun.")
