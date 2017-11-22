@@ -149,7 +149,7 @@ def playerStandings():
         id: the plyer's unique id (assigned by the database)
         name: the player's full name (as registered)
         wins: the number of  matches the player has won
-        matches: the number of matches the player has played
+        matches: the number of matches the plaer  EASTER has played
     """
 
 
