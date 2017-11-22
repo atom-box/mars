@@ -20,7 +20,7 @@ def connect():
 def deleteMatches():
     db = connect()
     c = db.cursor()
-    QUERY = 'DELETE FROM matches;'
+    QUERY = 'TRUNCATE TABLE matches;'
     c.execute( QUERY )
     db.commit()
     db.close()
@@ -30,7 +30,7 @@ def deleteMatches():
 def deletePlayers():
     db = connect()
     c = db.cursor()
-    QUERY = 'DELETE FROM players;'
+    QUERY = 'TRUNCATE TABLE players;'
     c.execute( QUERY )
     db.commit()
     db.close()
@@ -55,7 +55,7 @@ def registerPlayer(name):
     # 1, 2, 3, 19, 20 , 21.   Huh!?
    HAN_SOLO = connect() 
    c = HAN_SOLO.cursor()
-   QUERY = "insert into players (name) values (%s);"
+   QUERY = "INSERT INTO players (name) VALUES (%s);"
    DATA = (name, )
    c.execute( QUERY, DATA )
    HAN_SOLO.commit()
