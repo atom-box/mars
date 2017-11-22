@@ -165,6 +165,13 @@ def reportMatch(winner, loser):
 def swissPairings():
     h = connect()
     c = h.cursor()
+    #check for presence of prerequisite VIEWS
+    try:
+        c.execute("SELECT * FROM pwl2;") # arbitrary view call
+    except:
+        playerStandings() # creates views if not already present
+        h = connect() # subtle bug! function PLAYERSTANDINGS exits by closing handle
+        c = h.cursor() # creates a cursor for the QUERY's below
     QUERY0 = '''
     DROP VIEW IF EXISTS players2, players3;
     '''
