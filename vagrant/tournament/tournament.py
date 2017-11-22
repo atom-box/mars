@@ -74,6 +74,10 @@ def registerPlayer(name):
 def playerStandings():
     h = connect()
     c = h.cursor()
+    QUERY_CLEAR = '''
+    DROP VIEW IF EXISTS w, l, pw, pwl, pwl2, s, inwm;
+    '''
+
     QUERY_W = """
     CREATE VIEW w AS                                                                                 
     SELECT matches.winner_id, count(*)::smallint as wins
@@ -123,7 +127,7 @@ def playerStandings():
         FROM pwl2 JOIN s 
         ON pwl2.player_id =s.player_id;
     """
-
+    c.execute(QUERY_CLEAR)
     c.execute(QUERY_W)
     c.execute(QUERY_L)
     c.execute(QUERY_PW)
@@ -132,7 +136,7 @@ def playerStandings():
     c.execute(QUERY_S)
     c.execute(QUERY_INWM)
     theStuff = c.fetchall() #c.fetchall()
-    h.rollback()
+    h.commit()
     h.close()
     return theStuff
     """Returns a list of the players and their win records, sorted by wins.
@@ -156,43 +160,36 @@ def reportMatch(winner, loser):
     DATA_WINNER = (winner,)
     DATA_LOSER = (loser,)
     c.execute(QUERY1, (DATA_WINNER, DATA_LOSER) )
-
     h.commit()
     h.close()
     return
  
  
 def swissPairings():
-    h = connect()
-    c = h.cursor()
-    #check for presence of prerequisite VIEWS
-    try:
-        c.execute("SELECT * FROM pwl2;") # arbitrary view call
-    except:
-        playerStandings() # creates views if not already present
-        h = connect() # subtle bug! function PLAYERSTANDINGS exits by closing handle
-        c = h.cursor() # creates a cursor for the QUERY's below
+    playerStandings() # creates views if not already present
+    h = connect() # subtle bug! function PLAYERSTANDINGS exits by closing handle
+    c = h.cursor() # creates a cursor for the QUERY's below
     QUERY0 = '''
     DROP VIEW IF EXISTS players2, players3;
     '''
     QUERY1 =  '''
         CREATE VIEW players2 AS 
-        SELECT playerid, name, wins 
-        FROM players ORDER BY wins DESC;
+        SELECT player_id, name, wins 
+        FROM pwl2 ORDER BY wins DESC;
     '''    
     c.execute(QUERY1)
 
     QUERY2 =  '''
         CREATE VIEW players3 AS 
-        SELECT playerid, name, wins, 
+        SELECT player_id, name, wins, 
         row_number() OVER (ORDER BY wins DESC) 
-        AS hay 
-        FROM players  ;
+        AS counter 
+        FROM players2  ;
     '''
     QUERY3 =  '''
-        SELECT a.playerid, a.name, b.playerid, b.name
+        SELECT a.player_id, a.name, b.player_id, b.name
         FROM players3 as a, players3 AS b 
-        WHERE a.hay+1 = b.hay AND (a.hay%2=1);
+        WHERE a.counter+1 = b.counter AND (a.counter%2=1);
     '''
     c.execute( QUERY0 )    
     c.execute( QUERY1 )
@@ -240,5 +237,5 @@ print("Fixed?")
 print( listOfTuples[0][0], int(listOfTuples[0][2]), str(listOfTuples[0][3]) ) 
 
 print( "Swiss pairings has: ") 
-# print( swissPairings() )
+print( swissPairings() )
 print( "That was fun.")
