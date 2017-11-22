@@ -140,16 +140,8 @@ def playerStandings():
     h.close()
     return theStuff
     """Returns a list of the players and their win records, sorted by wins.
-
     The first entry in the list should be the player in first place, or a player
     tied for first place if there is currently a tie.
-
-    Returns:
-      A list of tuples, each of which contains (id, name, wins, matches):
-        id: the plyer's unique id (assigned by the database)
-        name: the player's full name (as registered)
-        wins: the number of  matches the player has won
-        matches: the number of matches the player has played
     """
 
 
@@ -166,9 +158,9 @@ def reportMatch(winner, loser):
  
  
 def swissPairings():
-    playerStandings() # creates views if not already present
+    playerStandings() # creates views that are pre-requisite to QUERY's below.
     h = connect() # subtle bug! function PLAYERSTANDINGS exits by closing handle
-    c = h.cursor() # creates a cursor for the QUERY's below
+    c = h.cursor() # 
     QUERY0 = '''
     DROP VIEW IF EXISTS players2, players3;
     '''
@@ -198,44 +190,10 @@ def swissPairings():
     rawAll = c.fetchall()
     return rawAll
     """Returns a list of pairs of players for the next round of a match.
-  
     Assuming that there are an even number of players registered, each player
     appears exactly once in the pairings.  Each player is paired with another
     player with an equal or nearly-equal win record, that is, a player adjacent
     to him or her in the standings.
-  
-    Returns:
-      A list of tuples, each of which contains (id1, name1, id2, name2)
-        id1: the first player's unique id
-        name1: the first player's name
-        id2: the second player's unique id
-        name2: the second player's name
     """
 
-print( "Let's start! ")
-print("ASSUME: client will run the SQL before the Python.  Syntax: \i tournament.sql from the psql prompt, with db CLOSED. ")
-registerPlayer("Bela Abzug")
-registerPlayer("Wayne County")
-registerPlayer("Warren")
-registerPlayer("Shamu")
-registerPlayer("123Alien")
-registerPlayer("Mork & Mindy")
-
-
-reportMatch(1,2)
-reportMatch(3,4)
-reportMatch(1,3)
-reportMatch(2,4)
-
-
-print( "Player standings has: ") 
-print( playerStandings() )
-print( "The first mystery L is: ") 
-listOfTuples = playerStandings()
-print( listOfTuples[0][0], listOfTuples[0][2], listOfTuples[0][3])
-print("Fixed?")
-print( listOfTuples[0][0], int(listOfTuples[0][2]), str(listOfTuples[0][3]) ) 
-
-print( "Swiss pairings has: ") 
-print( swissPairings() )
-print( "That was fun.")
+ 
