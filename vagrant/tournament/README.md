@@ -1,7 +1,5 @@
 V2.0  Tournament.py   November 18, 2017
-Program to keep track of players during a Swiss-style tournament
-(version 1.0 was previously submitted on Nov 18, 2017 but returned with referee comments)
-This program was completed for the Udacity Relational Databases and Full Stack Fundamentals courses  It was written by Evan Genest    
+This program was completed for the Udacity Relational Databases and Full Stack Fundamentals courses  It was written by Evan Genest  This program dynamically updates a Swiss-Style bracket for a live tournament. I used (1) PostGRESQL, (2) Vagrant v.m., (3) Python for the server queries.  
 
 List of Associated Files
 -----------------------
